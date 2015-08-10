@@ -94,12 +94,6 @@
     <File Hash="816" Name="Managers\SpellImmunityManager.cs" />
     <File Hash="9859" Name="Managers\TalentManager.cs" />
     <File Hash="4748" Name="Managers\TankManager.cs" />
-    <File Hash="0" Name="obj\Bobby53\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
-    <File Hash="0" Name="obj\Bobby53\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
-    <File Hash="0" Name="obj\Bobby53\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
-    <File Hash="0" Name="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
-    <File Hash="0" Name="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
-    <File Hash="0" Name="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <File Hash="8209" Name="Settings\DeathKnightSettings.cs" />
     <File Hash="36970" Name="Settings\DruidSettings.cs" />
     <File Hash="1029" Name="Settings\HealerSettings.cs" />
