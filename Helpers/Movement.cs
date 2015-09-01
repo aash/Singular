@@ -952,12 +952,13 @@ namespace Singular.Helpers
             Vector3 detourPointSrc = NavHelper.ToNav(wowPointSrc);
             Vector3 detourPointDest = NavHelper.ToNav(wowPointDest);
             // ensure tiles for start and end location are loaded. this does nothing if they're already loaded
-            wowNav.LoadTile(TileIdentifier.GetByPosition(wowPointSrc));
-            wowNav.LoadTile(TileIdentifier.GetByPosition(wowPointDest));
+            //WowNavigator.WorldMesh.LoadTile();
+            wowNav.WorldMesh.LoadTile(TileIdentifier.GetByPosition(wowPointSrc));
+            wowNav.WorldMesh.LoadTile(TileIdentifier.GetByPosition(wowPointDest));
 
             Vector3 nearestPolyPoint;
             PolygonReference polyRef;
-            var status = wowNav.MeshQuery.FindNearestPolygon(
+            var status = wowNav.WorldMesh.MeshQuery.FindNearestPolygon(
                 detourPointSrc,
                 wowNav.Extents,
                 wowNav.QueryFilter.InternalFilter,
@@ -971,7 +972,7 @@ namespace Singular.Helpers
             Vector3 rayHitNorml;
 
             //  normalized distance (0 to 1.0) if there was a hit, otherwise float.MaxValue.
-            status = wowNav.MeshQuery.Raycast(
+            status = wowNav.WorldMesh.MeshQuery.Raycast(
                 polyRef,
                 detourPointSrc,
                 detourPointDest,
