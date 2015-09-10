@@ -15,12 +15,39 @@ using Singular.Settings;
 using System;
 using CommonBehaviors.Actions;
 using System.Collections.Generic;
+using Styx.Common;
 
 
 namespace Singular.ClassSpecific
 {
     public static class Generic
     {
+
+        // hide all combat related behaviors for simcraftimpl
+        [Behavior(BehaviorType.Heal, tags: "simcraftimpl")]
+        public static Composite SimcraftImplHeal() { return null; }
+
+        [Behavior(BehaviorType.CombatBuffs, tags: "simcraftimpl")]
+        public static Composite SimcraftImplCombatBuff() { return null; }
+
+        [Behavior(BehaviorType.PreCombatBuffs, tags: "simcraftimpl")]
+        public static Composite SimcraftImplPreCombatBuffs() { return null; }
+
+        [Behavior(BehaviorType.PullBuffs, tags: "simcraftimpl")]
+        public static Composite SimcraftImplPullBuffs() { return null; }
+
+        [Behavior(BehaviorType.Pull, tags: "simcraftimpl")]
+        public static Composite SimcraftImplPull() { return new ActionAlwaysFail(); }
+
+        [Behavior(BehaviorType.Combat, tags: "simcraftimpl")]
+        public static Composite SimcraftImplCombat()
+        {
+            // all configuration of actual combat generator,
+            // it's class and spec specific things encapsulated into the SimcraftImpl module
+            // so just returning the Root.
+            return SingularRoutine.SimcraftImplInstance.Root;
+        }
+
         [Behavior(BehaviorType.Initialize, WoWClass.None, priority: 9000)]
         public static Composite CreateGenericInitializeBehaviour()
         {

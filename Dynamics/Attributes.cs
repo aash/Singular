@@ -21,13 +21,15 @@ namespace Singular.Dynamics
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
     internal sealed class BehaviorAttribute : Attribute
     {
-        public BehaviorAttribute(BehaviorType type, WoWClass @class = WoWClass.None, WoWSpec spec =(WoWSpec) int.MaxValue, WoWContext context = WoWContext.All, int priority = 0)
+        public BehaviorAttribute(BehaviorType type, WoWClass @class = WoWClass.None,
+            WoWSpec spec = (WoWSpec) int.MaxValue, WoWContext context = WoWContext.All, int priority = 0, string tags = "singular")
         {
             Type = type;
             SpecificClass = @class;
             SpecificSpec = spec;
             SpecificContext = context;
             PriorityLevel = priority;
+            Tags = tags.Split(new [] {',', ' '}, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public BehaviorType Type { get; private set; }
@@ -35,5 +37,8 @@ namespace Singular.Dynamics
         public WoWContext SpecificContext { get; private set; }
         public WoWClass SpecificClass { get; private set; }
         public int PriorityLevel { get; private set; }
+
+        // it is just a collection of strings which make possible to filter behaviors
+        public string[] Tags { get; private set; }
     }
 }

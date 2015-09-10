@@ -23,6 +23,7 @@ using Styx.CommonBot.POI;
 using System.Text;
 using Styx.WoWInternals.DBC;
 using System.Runtime.InteropServices;
+using Simcraft;
 
 namespace Singular
 {
@@ -34,6 +35,8 @@ namespace Singular
 
         public static uint Latency { get; set; }
         private static WaitTimer WaitForLatencyCheck = new WaitTimer( TimeSpan.FromSeconds(5));
+
+        public static SimcraftImpl SimcraftImplInstance = new SimcraftImpl();
        
         public static SingularRoutine Instance { get; private set; }
 

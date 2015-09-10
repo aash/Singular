@@ -12,6 +12,7 @@ using Styx;
 using Styx.TreeSharp;
 using System.Drawing;
 using Singular.ClassSpecific;
+using Styx.Common;
 
 namespace Singular.Dynamics
 {
@@ -80,7 +81,7 @@ namespace Singular.Dynamics
                         continue;
 
                     // Check if our Initialization behavior matches. If not, don't add it!
-                    if (IsMatchingMethod(attribute, wowClass, spec, behavior, context))
+                    if (IsMatchingMethod(attribute, wowClass, spec, behavior, context, new string[] {}))
                     {
                         if (matchedMethods.ContainsKey(attribute))
                         {
@@ -140,6 +141,16 @@ namespace Singular.Dynamics
             behaviourCount = 0;
             var matchedMethods = new Dictionary<BehaviorAttribute, Composite>();
 
+            var overrideTags = SingularSettings.Instance.OverrideTags.Split(
+                new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var simcSkipBehaviors = new BehaviorType[]
+            {
+                BehaviorType.CombatBuffs, 
+                BehaviorType.Heal, 
+                BehaviorType.PreCombatBuffs, 
+                BehaviorType.PullBuffs, 
+            };
+
             foreach (MethodInfo mi in _methods)
             {
                 // If the behavior is set as ignore. Don't use it? Duh?
@@ -153,8 +164,12 @@ namespace Singular.Dynamics
                     if (attribute == null)
                         continue;
 
+                    // skip some behavior for simcraftimpl because they are not handled correctly
+                    if (overrideTags.Contains("simcraftimpl") && simcSkipBehaviors.Contains(behavior))
+                        continue;
+                    
                     // Check if our behavior matches with what we want. If not, don't add it!
-                    if (IsMatchingMethod(attribute, wowClass, spec, behavior, context))
+                    if (IsMatchingMethod(attribute, wowClass, spec, behavior, context, overrideTags))
                     {
                         if (!silent)
                             Logger.WriteFile("{0} {1} {2}", attribute.PriorityLevel.ToString().AlignRight(4), behavior.ToString().AlignLeft(15), mi.Name);
@@ -211,7 +226,7 @@ namespace Singular.Dynamics
             return result;
         }
 
-        private static bool IsMatchingMethod(BehaviorAttribute attribute, WoWClass wowClass, WoWSpec spec, BehaviorType behavior, WoWContext context)
+        private static bool IsMatchingMethod(BehaviorAttribute attribute, WoWClass wowClass, WoWSpec spec, BehaviorType behavior, WoWContext context, string[] requiredTags)
         {
             if (attribute.SpecificClass != wowClass && attribute.SpecificClass != WoWClass.None)
                 return false;
@@ -220,6 +235,9 @@ namespace Singular.Dynamics
             if ((attribute.SpecificContext & context) == 0)
                 return false;
             if (attribute.SpecificSpec != (WoWSpec)int.MaxValue && attribute.SpecificSpec != spec)
+                return false;
+            // fail if attribute does not contain all the required tags
+            if (attribute.Tags.Intersect(requiredTags).Count() != requiredTags.Length)
                 return false;
 
             /* Logger.WriteDebug("IsMatchingMethod({0}, {1}, {2}, {3}) - {4}, {5}, {6}, {7}, {8}", wowClass, spec, behavior,

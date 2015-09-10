@@ -842,6 +842,13 @@ namespace Singular.Settings
         [Description("Use Garrison Ability if in combat with this many mobs or more")]
         public int GarrisonAbilityMobCount { get; set; }
 
+        [Setting, ReadOnly(false)]
+        [DefaultValue("singular")]
+        [Category("General")]
+        [DisplayName("Override tags")]
+        [Description("Description")]
+        public string OverrideTags { get; set; }
+
         #endregion
 
         #region Category: Pets

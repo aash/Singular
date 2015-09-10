@@ -87,6 +87,18 @@ namespace Singular
                 Logger.WriteFile("======================================================");
             }
 
+            SimcraftImplInstance.RebuildBehaviors();
+            // replace Lua event listeners
+            try
+            {
+                SimcraftImplInstance.Stop();
+                SimcraftImplInstance.Start();
+            }
+            catch (Exception e)
+            {
+                Logging.Write("simpl lua event replace error: {0}", e);
+            }
+
             // These are optional. If they're not implemented, we shouldn't stop because of it.
             EnsureComposite(silent, false, CurrentWoWContext, BehaviorType.Death);
             EnsureComposite(silent, false, CurrentWoWContext, BehaviorType.LossOfControl);
@@ -333,7 +345,9 @@ namespace Singular
                 return false;
             }
 
-            composite = AddCommonBehaviorPrefix(composite, type);
+            if (type == BehaviorType.Combat 
+                && SingularSettings.Instance.CombatOverrideTags != "simcraftimpl")
+                composite = AddCommonBehaviorPrefix(composite, type);
 
             // replace hook we created during initialization
             TreeHooks.Instance.ReplaceHook(HookName(type), composite ?? new ActionAlwaysFail());
