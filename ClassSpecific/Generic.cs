@@ -45,7 +45,7 @@ namespace Singular.ClassSpecific
             // all configuration of actual combat generator,
             // it's class and spec specific things encapsulated into the SimcraftImpl module
             // so just returning the Root.
-            return SingularRoutine.SimcraftImplInstance.Root;
+            return SingularRoutine.Instance.SimcraftImplInstance.Root;
         }
 
         [Behavior(BehaviorType.Initialize, WoWClass.None, priority: 9000)]

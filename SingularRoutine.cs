@@ -36,7 +36,7 @@ namespace Singular
         public static uint Latency { get; set; }
         private static WaitTimer WaitForLatencyCheck = new WaitTimer( TimeSpan.FromSeconds(5));
 
-        public static SimcraftImpl SimcraftImplInstance = new SimcraftImpl();
+        public SimcraftImpl SimcraftImplInstance;
        
         public static SingularRoutine Instance { get; private set; }
 
@@ -67,6 +67,7 @@ namespace Singular
         {
             Instance = this;
             TrainingDummyBehaviors = WoWContext.Instances;
+            SimcraftImplInstance = new SimcraftImpl();
         }
 
         public override void Initialize()

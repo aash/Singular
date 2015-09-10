@@ -345,8 +345,9 @@ namespace Singular
                 return false;
             }
 
+            // no need in a prefix for simcraftimpl combat
             if (type == BehaviorType.Combat 
-                && SingularSettings.Instance.CombatOverrideTags != "simcraftimpl")
+                && SingularSettings.Instance.OverrideTags != "simcraftimpl")
                 composite = AddCommonBehaviorPrefix(composite, type);
 
             // replace hook we created during initialization
