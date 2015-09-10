@@ -35,7 +35,7 @@ using Styx.CommonBot.Profiles.Quest.Order;
 
 namespace Simcraft
 {
-    public partial class SimcraftImpl : BotBase
+    public partial class SimcraftImpl
     {
         public double floor(double a)
         {
@@ -291,18 +291,18 @@ namespace Simcraft
             }
         }
 
-        public override void OnDeselected()
+        public void OnDeselected()
         {
             SimCSettings.Save();
             Write(Name + " deselected");
-            base.OnDeselected();
+            //base.OnDeselected();
         }
 
-        public override void OnSelected()
+        public void OnSelected()
         {
             SimCSettings.Load();
             Write(Name + " selected");
-            base.OnSelected();
+            //base.OnSelected();
         }
 
         public Decimal BaseGcd()
@@ -322,12 +322,12 @@ namespace Simcraft
             return (Decimal)1.5;
         }
 
-        public override string Name
+        public string Name
         {
             get { return "Simcraft Impl"; }
         }
 
-        public override Composite Root
+        public Composite Root
         {
             get
             {
@@ -343,7 +343,7 @@ namespace Simcraft
 
        
 
-        public override PulseFlags PulseFlags
+        public PulseFlags PulseFlags
         {
             get { return PulseFlags.Objects | PulseFlags.Lua; }
         }
