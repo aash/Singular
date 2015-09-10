@@ -54,11 +54,11 @@ namespace Simcraft
             };
 
             ret.Cooldowns.key = Keys.C;
-            ret.Cooldowns.mod = ModifierKeys.NoRepeat;
+            ret.Cooldowns.mod = ModifierKeys.NoRepeat | ModifierKeys.Control | ModifierKeys.Shift;
             ret.Aoe.key = Keys.A;
-            ret.Aoe.mod = ModifierKeys.NoRepeat;
+            ret.Aoe.mod = ModifierKeys.NoRepeat | ModifierKeys.Control | ModifierKeys.Shift;
             ret.Burst.key = Keys.B;
-            ret.Burst.mod = ModifierKeys.NoRepeat;
+            ret.Burst.mod = ModifierKeys.NoRepeat | ModifierKeys.Control | ModifierKeys.Shift;
             ret.Execution.key = Keys.X;
             ret.Execution.mod = ModifierKeys.NoRepeat;
 
