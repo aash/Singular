@@ -145,10 +145,10 @@ namespace Singular.Dynamics
                 new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var simcSkipBehaviors = new BehaviorType[]
             {
-                BehaviorType.CombatBuffs, 
-                BehaviorType.Heal, 
-                BehaviorType.PreCombatBuffs, 
-                BehaviorType.PullBuffs, 
+                BehaviorType.CombatBuffs,
+                //BehaviorType.Heal, 
+                //BehaviorType.PreCombatBuffs, 
+                //BehaviorType.PullBuffs, 
             };
 
             foreach (MethodInfo mi in _methods)

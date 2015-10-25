@@ -24,17 +24,17 @@ namespace Singular.ClassSpecific
     {
 
         // hide all combat related behaviors for simcraftimpl
-        [Behavior(BehaviorType.Heal, tags: "simcraftimpl")]
-        public static Composite SimcraftImplHeal() { return null; }
+        //[Behavior(BehaviorType.Heal, tags: "simcraftimpl")]
+        //public static Composite SimcraftImplHeal() { return null; }
 
-        [Behavior(BehaviorType.CombatBuffs, tags: "simcraftimpl")]
-        public static Composite SimcraftImplCombatBuff() { return null; }
+        //[Behavior(BehaviorType.CombatBuffs, tags: "simcraftimpl")]
+        //public static Composite SimcraftImplCombatBuff() { return null; }
 
-        [Behavior(BehaviorType.PreCombatBuffs, tags: "simcraftimpl")]
-        public static Composite SimcraftImplPreCombatBuffs() { return null; }
+        //[Behavior(BehaviorType.PreCombatBuffs, tags: "simcraftimpl")]
+        //public static Composite SimcraftImplPreCombatBuffs() { return null; }
 
-        [Behavior(BehaviorType.PullBuffs, tags: "simcraftimpl")]
-        public static Composite SimcraftImplPullBuffs() { return null; }
+        //[Behavior(BehaviorType.PullBuffs, tags: "simcraftimpl")]
+        //public static Composite SimcraftImplPullBuffs() { return null; }
 
         [Behavior(BehaviorType.Pull, tags: "simcraftimpl")]
         public static Composite SimcraftImplPull() { return new ActionAlwaysFail(); }
