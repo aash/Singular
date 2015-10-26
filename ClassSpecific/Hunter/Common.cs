@@ -19,6 +19,10 @@ using System.Drawing;
 using Styx.CommonBot.POI;
 using Styx.Common.Helpers;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Buddy.Coroutines;
+using Styx.Common;
+using Styx.CommonBot.Coroutines;
 using Styx.CommonBot.Routines;
 
 using LocationRetriever = Singular.Helpers.SimpleLocationRetriever;
@@ -135,6 +139,8 @@ namespace Singular.ClassSpecific.Hunter
                                 Spell.Buff("Mend Pet", onUnit => Me.Pet, req => Me.GotAlivePet && Pet.HealthPercent < 85)
                                 )
                             ),
+
+                        new ThrottlePasses(TimeSpan.FromSeconds(5), CreateHunterMovementBuff()),
 
                         Singular.Helpers.Rest.CreateDefaultRestBehaviour(),
 
@@ -1202,39 +1208,73 @@ namespace Singular.ClassSpecific.Hunter
 
         public static DateTime GhostWolfRequest;
 
-        public static Decorator CreateHunterMovementBuff()
+        public static Composite CreateHunterMovementBuff()
         {
-            return new Decorator(
-                ret => // SingularSettings.Instance. &&
-                    !Spell.IsCastingOrChannelling() && !Spell.IsGlobalCooldown()
-                    && MovementManager.IsClassMovementAllowed
-                    && SingularRoutine.CurrentWoWContext != WoWContext.Instances
-                    && Me.IsMoving // (DateTime.UtcNow - GhostWolfRequest).TotalMilliseconds < 1000
-                    && Me.IsAlive
-                    && !Me.OnTaxi && !Me.InVehicle && !Me.Mounted && !Me.IsOnTransport && !Me.IsSwimming
-                    && !Me.HasAura("Aspect of the Cheetah")
-                    && SpellManager.HasSpell("Aspect of the Cheetah")
-                    && BotPoi.Current != null
-                    && BotPoi.Current.Type != PoiType.None
-                    && BotPoi.Current.Type != PoiType.Hotspot
-                    && TalentManager.HasGlyph("Aspect of the Cheetah")
-                    && BotPoi.Current.Location.Distance(Me.Location) > 60
-                    && !Me.IsAboveTheGround()
-                    && !Me.IsFlying,
-
-                new Sequence(
-                    new Action(r => Logger.WriteDebug("HunterMoveBuff: poitype={0} poidist={1:F1} indoors={2} canmount{3} riding={4}",
-                        BotPoi.Current.Type,
-                        BotPoi.Current.Location.Distance(Me.Location),
-                        Me.IsIndoors.ToYN(),
-                        Mount.CanMount().ToYN(),
-                        Me.GetSkill(SkillLine.Riding).CurrentValue
-                        )),
-                    Spell.BuffSelf("Aspect of the Cheetah"),
-                    Helpers.Common.CreateWaitForLagDuration()
-                    )
-                );
+            return new ActionRunCoroutine(ctx => MovementBuffCoroutine());
         }
+
+        private static async Task<bool> MovementBuffCoroutine()
+        {
+            if (   Spell.IsCastingOrChannelling()
+                || Spell.IsGlobalCooldown()
+                || !MovementManager.IsClassMovementAllowed
+                || Me.IsFlying
+                || !Me.IsAlive
+                || Me.OnTaxi || Me.InVehicle || Me.Mounted || Me.IsOnTransport
+                || Me.IsAboveTheGround())
+                return false;
+
+            // only use Aspect of the Cheetah if we got the glyph for that
+            // so we can safely use it anytime without caring of dazed debuff
+            if (   !Me.HasAura("Aspect of the Cheetah")
+                && SpellManager.HasSpell("Aspect of the Cheetah")
+                && TalentManager.HasGlyph("Aspect of the Cheetah"))
+            {
+                SpellManager.Cast("Aspect of the Cheetah");
+                return true;
+            }
+            // if we use click to move and click distance is far enough
+            // it is guaranteed that we can not accidentally jump off the cliff
+            if (   WoWMovement.ClickToMoveInfo.IsClickMoving
+                && WoWMovement.ClickToMoveInfo.ClickPos.Distance(Me.Location) > 16
+                && SpellManager.CanCast("Disengage"))
+            {
+                await DisengageAsMovementBuffCoroutine();
+                return true;
+            }
+            return false;
+        }
+
+        private static async Task<bool> DisengageAsMovementBuffCoroutine()
+        {
+            if (Spell.IsCastingOrChannelling()
+                || Spell.IsGlobalCooldown()
+                || !SpellManager.CanCast("Disengage"))
+                return false;
+
+            var heading = Me.MovementInfo.Heading;
+            var backwardHeading = heading;
+            backwardHeading += (float) Math.PI;
+            if (backwardHeading > 2*Math.PI)
+            {
+                backwardHeading -= 2*(float) Math.PI;
+            }
+            await TurnTo(backwardHeading);
+            await Coroutine.Wait(50, () => false);
+            SpellManager.Cast("Disengage");
+            await Coroutine.Wait(50, () => false);
+            await TurnTo(heading);
+            return true;
+        }
+
+        private static async Task<bool> TurnTo(float heading)
+        {
+            WoWMovement.ClickToMove(WoWGuid.Empty, StyxWoW.Me.Location, heading, WoWMovement.ClickToMoveType.FaceOther);
+            await Coroutine.Wait(1000, () => Math.Abs(heading - StyxWoW.Me.MovementInfo.Heading) < 0.001);
+            WoWMovement.MoveStop();
+            return true;
+        }
+
 
     }
 
